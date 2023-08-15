@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Firebase Web App</title>
+<script src="jquery.min.js"></script>
+<script src="firebase.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBZJ0ucxcYxgOMC1FEXs4ZTAruj1Ot1AC8",
+  authDomain: "codehafeez-web.firebaseapp.com",
+  databaseURL: "https://codehafeez-web.firebaseio.com",
+  projectId: "codehafeez-web",
+  storageBucket: "codehafeez-web.appspot.com",
+  messagingSenderId: "967589938620",
+};    
+firebase.initializeApp(firebaseConfig);
+</script>
+</head>
+<body>
+  <div id="app">
+    <h1>Firebase Web Auth App</h1>
+    <hr/><br/>
+    <input type="button" value="Check Auth & Logout" onclick="logoutFunction();" />
+
+    <!-- Login Form -->
+    <div id="loginForm">
+      <h2>Login</h2>
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Password" />
+      <button onclick="login()">Login</button>
+    </div>
+
+    <!-- Registration Form -->
+    <div id="registrationForm">
+      <h2>Register</h2>
+      <input type="email" id="registerEmail" placeholder="Email" />
+      <input type="password" id="registerPassword" placeholder="Password" />
+      <button onclick="register()">Register</button>
+    </div>
+
+    <!-- Forgot Password Form -->
+    <div id="forgotPasswordForm">
+      <h2>Forgot Password</h2>
+      <input type="email" id="forgotPasswordEmail" placeholder="Email" />
+      <button onclick="forgotPassword()">Reset Password</button>
+    </div>
+
+
+    <!-- Display Messages -->
+    <h1 style="color:red; text-align:center;" id="message"></h1>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById("loginForm");
+    const registrationForm = document.getElementById("registrationForm");
+    const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+    const message = document.getElementById("message");
+
+    function showForm(formId) {
+      loginForm.style.display = "none";
+      registrationForm.style.display = "none";
+      forgotPasswordForm.style.display = "none";
+      formId.style.display = "block";
+      message.innerHTML = "";
+    }
+
+    function login() {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => {
+          message.innerHTML = "Login successful!";
+        })
+        .catch((error) => {
+          message.innerHTML = `Error: ${error.message}`;
+        });
+    }
+
+    function register() {
+      const email = document.getElementById("registerEmail").value;
+      const password = document.getElementById("registerPassword").value;
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          message.innerHTML = "Registration successful!";
+        })
+        .catch((error) => {
+          message.innerHTML = `Error: ${error.message}`;
+        });
+    }
+
+    function forgotPassword() {
+      const email = document.getElementById("forgotPasswordEmail").value;
+      firebase.auth().sendPasswordResetEmail(email)
+        .then(() => {
+          message.innerHTML = "Password reset email sent!";
+        })
+        .catch((error) => {
+          message.innerHTML = `Error: ${error.message}`;
+        });
+    }
+
+    
+    function logoutFunction() {
+      const user = firebase.auth().currentUser;
+      if (user) {
+        alert(`login user: ${user.email} (UID: ${user.uid})`);
+        firebase.auth().signOut().then(() => {
+          message.innerHTML = "Successfully logged out!";
+        }).catch((error) => {
+          message.innerHTML = `Error: ${error.message}`;
+        });
+      } else {
+        message.innerHTML = "User is not logged in";
+      }
+    }
+
+
+    /*
+    function updatePassowrdFunction(){
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          firebase.auth().currentUser.updatePassword('123123').then(function() {
+          alert("Success Update Password");
+          }).catch(function(err){ alert("Error Update Password : "+err); });
+        } 
+        else { alert("User not Login"); }
+      });
+    }
+
+    function updateEmailFunction(){ 
+        firebase.auth().currentUser.updateEmail('hafeez@gmail.com').then(function() {
+        alert("Successfully Update Email");
+      }).catch(function(err){ alert("Error Update Email : "+err); });     
+    }
+
+    function deleteAccountFunction(){
+      firebase.auth().currentUser.delete();
+      alert('Successfully Account Delete');
+    }
+    */    
+
+</script>
+</body>
+</html>

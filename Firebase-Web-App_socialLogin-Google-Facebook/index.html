@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Firebase Google Login</title>
+</head>
+<body>
+
+    <div id="firebaseui-auth-container"></div>
+    <div id="user-info"></div>
+    
+<script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-auth.js"></script>
+
+<!-- Firebase UI -->
+<script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+<link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css"/>
+
+<script>
+  var firebaseConfig = {
+      apiKey: "AIzaSyBZJ0ucxcYxgOMC1FEXs4ZTAruj1Ot1AC8",
+      authDomain: "codehafeez-web.firebaseapp.com",
+      databaseURL: "https://codehafeez-web.firebaseio.com",
+      projectId: "codehafeez-web",
+      storageBucket: "codehafeez-web.appspot.com",
+      messagingSenderId: "967589938620",
+      appId: "1:967589938620:web:6b275a7b51385659c3d7b9"
+  };
+  firebase.initializeApp(firebaseConfig);
+
+const ui = new firebaseui.auth.AuthUI(firebase.auth());
+const uiConfig = {
+  callbacks: {
+    signInSuccessWithAuthResult(authResult, redirectUrl) {
+        
+      const user = authResult.user;
+      console.log(user);
+      
+      const displayName = user.displayName;
+      const email = user.email;
+      const photoURL = user.photoURL;
+      const uid = user.uid;
+
+      const userInfoElement = document.getElementById('user-info');
+      userInfoElement.innerHTML = `
+        <p>Welcome, ${displayName}!</p>
+        <p>Email: ${email}</p>
+        <img src="${photoURL}" alt="Profile Picture" width="100" height="100">
+        <p>User ID: ${uid}</p>
+      `;
+    },
+  },
+  signInFlow: 'popup',
+  signInOptions: [
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    firebase.auth.FacebookAuthProvider.PROVIDER_ID // add facebook
+  ],
+};
+ui.start('#firebaseui-auth-container', uiConfig);
+</script>
+</body>
+</html>
